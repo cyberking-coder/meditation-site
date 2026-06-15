@@ -29,26 +29,6 @@ function ParallaxRig() {
   return null;
 }
 
-function Lights() {
-  return (
-    <>
-      <ambientLight intensity={0.35} color="#b9c6ff" />
-      {/* Soft front key light */}
-      <directionalLight position={[2, 3, 5]} intensity={1.1} color="#ffffff" />
-      {/* Ethereal rim light from behind */}
-      <spotLight
-        position={[0, 3, -6]}
-        angle={0.8}
-        penumbra={1}
-        intensity={120}
-        distance={30}
-        color="#9b6bff"
-      />
-      <pointLight position={[-4, -2, 2]} intensity={20} color="#4338ca" />
-    </>
-  );
-}
-
 export default function GalaxyCanvas({
   progressRef,
 }: {
@@ -65,18 +45,17 @@ export default function GalaxyCanvas({
       <Suspense fallback={null}>
         <Stars />
         <Nebula />
-        <Lights />
         <Meditator progressRef={progressRef} />
       </Suspense>
       <ParallaxRig />
 
-      {/* Soft bloom so the figure and lights bleed a luminous aura. */}
+      {/* Bloom makes the figure's bright Fresnel outline radiate. */}
       <EffectComposer enableNormalPass={false}>
         <Bloom
-          intensity={0.85}
-          luminanceThreshold={0.28}
+          intensity={1.1}
+          luminanceThreshold={0.22}
           luminanceSmoothing={0.9}
-          radius={0.75}
+          radius={0.8}
           mipmapBlur
         />
       </EffectComposer>

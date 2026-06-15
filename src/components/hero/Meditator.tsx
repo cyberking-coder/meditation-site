@@ -25,6 +25,9 @@ export default function Meditator({
       color: new THREE.Color("#C8CDD8"),
       roughness: 0.3,
       metalness: 0.4,
+      // Faint inner light so the bloom pass gives the figure a glowing aura.
+      emissive: new THREE.Color("#7c5bd6"),
+      emissiveIntensity: 0.35,
     });
 
     model.traverse((child) => {

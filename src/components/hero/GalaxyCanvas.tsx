@@ -2,6 +2,7 @@
 
 import { Suspense, useRef, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import Stars from "./Stars";
 import Nebula from "./Nebula";
@@ -68,6 +69,17 @@ export default function GalaxyCanvas({
         <Meditator progressRef={progressRef} />
       </Suspense>
       <ParallaxRig />
+
+      {/* Soft bloom so the figure and lights bleed a luminous aura. */}
+      <EffectComposer enableNormalPass={false}>
+        <Bloom
+          intensity={0.85}
+          luminanceThreshold={0.28}
+          luminanceSmoothing={0.9}
+          radius={0.75}
+          mipmapBlur
+        />
+      </EffectComposer>
     </Canvas>
   );
 }

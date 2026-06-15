@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { CHAKRAS } from "@/lib/chakras";
 import { asset } from "@/lib/asset";
 
@@ -23,61 +22,54 @@ export default function ChakraOverlays({
               transform: "translateX(-50%)",
             }}
           >
-            {/* Expanding glow ring (active only) */}
+            {/* Outer ripple rings (active only): expand 65px -> 120px and fade. */}
             {active && (
               <>
                 <span
-                  className="absolute left-1/2 top-1/2 h-[60px] w-[60px] rounded-full"
+                  className="absolute left-1/2 top-1/2 h-[65px] w-[65px] rounded-full"
                   style={{
                     border: `2px solid ${chakra.color}`,
-                    animation: "ring-pulse 2.4s ease-out infinite",
+                    animation: "chakra-ring 2s ease-out infinite",
                   }}
                 />
                 <span
-                  className="absolute left-1/2 top-1/2 h-[60px] w-[60px] rounded-full"
+                  className="absolute left-1/2 top-1/2 h-[65px] w-[65px] rounded-full"
                   style={{
                     border: `2px solid ${chakra.color}`,
-                    animation: "ring-pulse 2.4s ease-out infinite 1.2s",
+                    animation: "chakra-ring 2s ease-out infinite 1s",
                   }}
                 />
               </>
             )}
 
-            <motion.div
-              animate={
-                active
-                  ? { scale: [1, 1.2, 1], rotate: [0, 360] }
-                  : { scale: 1, rotate: 0 }
-              }
-              transition={
-                active
-                  ? {
-                      scale: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-                      rotate: { duration: 3, repeat: Infinity, ease: "linear" },
-                    }
-                  : { duration: 0.6 }
-              }
+            {/* Pulsing scale wrapper (separate element so spin + scale don't
+                fight over `transform`). */}
+            <div
               style={{
-                width: 60,
-                height: 60,
-                filter: active
-                  ? `grayscale(0%) drop-shadow(0 0 12px ${chakra.glowColor})`
-                  : "grayscale(100%)",
-                opacity: active ? 1 : 0.3,
-                transition: "opacity 0.8s ease, filter 0.8s ease",
+                animation: active
+                  ? "chakra-pulse 2s ease-in-out infinite"
+                  : "none",
               }}
             >
-              {/* Plain <img> with an explicit base-path-aware src so the PNGs
-                  resolve under the GitHub Pages subpath. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={asset(chakra.image)}
                 alt={chakra.name}
-                width={60}
-                height={60}
-                className="h-[60px] w-[60px] object-contain"
+                width={65}
+                height={65}
+                style={{
+                  width: 65,
+                  height: 65,
+                  objectFit: "contain",
+                  opacity: active ? 1 : 0.25,
+                  filter: active
+                    ? `grayscale(0%) brightness(1.2) drop-shadow(0 0 12px ${chakra.color}) drop-shadow(0 0 25px ${chakra.color})`
+                    : "grayscale(100%) brightness(0.2)",
+                  animation: active ? "chakra-spin 6s linear infinite" : "none",
+                  transition: "opacity 0.5s ease, filter 0.5s ease",
+                }}
               />
-            </motion.div>
+            </div>
           </div>
         );
       })}

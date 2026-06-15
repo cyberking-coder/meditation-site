@@ -94,19 +94,31 @@ html.lenis body {
     0 0 6px rgba(255, 255, 255, 0.25);
 }
 
+/* ---- Chakra animations ---- */
 @keyframes chakra-spin {
   to {
-    transform: translateX(-50%) rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
-@keyframes ring-pulse {
+@keyframes chakra-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+/* Outer ripple ring: expands 65px -> 120px (~1.85x) and fades. */
+@keyframes chakra-ring {
   0% {
-    transform: translate(-50%, -50%) scale(0.6);
-    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
   }
   100% {
-    transform: translate(-50%, -50%) scale(2.2);
+    transform: translate(-50%, -50%) scale(1.85);
     opacity: 0;
   }
 }
@@ -118,5 +130,18 @@ html.lenis body {
   }
   50% {
     opacity: 1;
+  }
+}
+
+/* ---- Crown chakra: light beam shooting upward ---- */
+@keyframes crown-beam {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translateX(-50%) scaleY(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateX(-50%) scaleY(1.08);
   }
 }

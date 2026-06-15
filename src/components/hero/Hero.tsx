@@ -11,6 +11,12 @@ import ChakraCard from "./ChakraCard";
 import WelcomeText from "./WelcomeText";
 import VideoReveal from "./VideoReveal";
 import MobileHeroVisual from "./MobileHeroVisual";
+import ThirdEyeEffect from "./ThirdEyeEffect";
+import CrownEffect from "./CrownEffect";
+
+// Third Eye = chakra 6 (segment 6), Crown = chakra 7 (segment 7).
+const THIRD_EYE_SEGMENT = 6;
+const CROWN_SEGMENT = 7;
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -42,33 +48,44 @@ function Loader() {
 export default function Hero() {
   const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
-  const progressRef = useRef(0);
   const welcomeRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLDivElement>(null);
   const lastSegment = useRef(-1);
 
   const [activeIds, setActiveIds] = useState<Set<number>>(EMPTY_IDS);
   const [cardChakra, setCardChakra] = useState<Chakra | null>(null);
+  const [segment, setSegment] = useState(0);
+  // Bumped each time the Third Eye segment is (re)entered so its one-shot
+  // effect remounts and replays.
+  const [thirdEyeKey, setThirdEyeKey] = useState(0);
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const applySegment = (segment: number) => {
-      if (segment === lastSegment.current) return;
-      lastSegment.current = segment;
+    const applySegment = (next: number) => {
+      const prev = lastSegment.current;
+      if (next === prev) return;
+      lastSegment.current = next;
+      setSegment(next);
 
-      if (segment === 0) {
+      // Fire the Third Eye effect once, on entering its segment.
+      if (next === THIRD_EYE_SEGMENT && prev !== THIRD_EYE_SEGMENT) {
+        setThirdEyeKey((k) => k + 1);
+      }
+
+      if (next === 0) {
         setActiveIds(EMPTY_IDS);
         setCardChakra(null);
-      } else if (segment >= 1 && segment <= 6) {
-        const chakra = CHAKRAS[segment - 1];
+      } else if (next >= 1 && next <= 6) {
+        // One chakra active at a time; the previous dims as the next lights up.
+        const chakra = CHAKRAS[next - 1];
         setActiveIds(new Set([chakra.id]));
         setCardChakra(chakra);
       } else {
         // segments 7 & 8: every chakra glows together
         setActiveIds(ALL_IDS);
-        setCardChakra(segment === 7 ? CHAKRAS[6] : null);
+        setCardChakra(next === 7 ? CHAKRAS[6] : null);
       }
     };
 
@@ -79,7 +96,6 @@ export default function Hero() {
       scrub: 1,
       onUpdate: (self) => {
         const p = self.progress;
-        progressRef.current = p;
 
         applySegment(progressToSegment(p));
 
@@ -109,14 +125,22 @@ export default function Hero() {
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         {/* Background visual */}
         <div className="absolute inset-0 z-10">
-          {isMobile ? <MobileHeroVisual /> : <GalaxyCanvas progressRef={progressRef} />}
+          {isMobile ? <MobileHeroVisual /> : <GalaxyCanvas />}
         </div>
+
+        {/* Crown awakening: upward beam + edge vignette (behind the chakras) */}
+        {!isMobile && segment >= CROWN_SEGMENT && <CrownEffect />}
 
         {/* Chakra PNG overlays on the figure's spine */}
         <ChakraOverlays activeIds={activeIds} />
 
         {/* Sliding info card */}
         <ChakraCard chakra={cardChakra} />
+
+        {/* Third Eye awakening sequence (one-shot, remounts via key) */}
+        {!isMobile && segment === THIRD_EYE_SEGMENT && (
+          <ThirdEyeEffect key={thirdEyeKey} />
+        )}
 
         {/* Welcome message */}
         <WelcomeText ref={welcomeRef} />

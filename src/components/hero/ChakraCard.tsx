@@ -5,7 +5,10 @@ import type { Chakra } from "@/lib/chakras";
 
 export default function ChakraCard({ chakra }: { chakra: Chakra | null }) {
   return (
-    <div className="pointer-events-none absolute inset-y-0 right-0 z-30 hidden items-center pr-6 md:flex lg:pr-16">
+    <div
+      className="pointer-events-none absolute inset-y-0 right-0 z-30 hidden items-center md:flex"
+      style={{ paddingRight: 40 }}
+    >
       <AnimatePresence mode="wait">
         {chakra && (
           <motion.div
@@ -13,33 +16,37 @@ export default function ChakraCard({ chakra }: { chakra: Chakra | null }) {
             initial={{ opacity: 0, x: 80 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 80 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-            className="glass w-[320px] rounded-2xl p-7"
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
+            className="w-[300px] rounded-2xl p-7"
             style={{
               border: `1px solid ${chakra.color}`,
-              boxShadow: `0 0 40px ${chakra.glowColor}, inset 0 0 24px rgba(255,255,255,0.04)`,
+              background: "rgba(0,0,0,0.7)",
+              backdropFilter: "blur(14px)",
+              WebkitBackdropFilter: "blur(14px)",
+              boxShadow: `0 0 40px ${chakra.glowColor}`,
             }}
           >
-            <div
-              className="mb-4 text-6xl leading-none"
-              style={{
-                color: chakra.color,
-                textShadow: `0 0 24px ${chakra.glowColor}`,
-              }}
+            <h3
+              className="text-xl font-semibold uppercase text-white"
+              style={{ letterSpacing: "0.22em" }}
             >
-              {chakra.symbol}
-            </div>
-            <h3 className="font-serif text-3xl font-semibold text-white">
               {chakra.name}
             </h3>
             <p
-              className="mt-1 text-sm uppercase tracking-[0.3em]"
-              style={{ color: chakra.color }}
+              className="mt-2 text-xs uppercase"
+              style={{ letterSpacing: "0.35em", color: chakra.color }}
             >
               {chakra.sanskrit}
             </p>
-            <p className="mt-4 text-lg text-white/90">{chakra.meaning}</p>
-            <p className="mt-4 border-t border-white/10 pt-4 font-serif text-xl italic text-muted">
+            <p
+              className="mt-5 text-sm uppercase text-white/85"
+              style={{ letterSpacing: "0.14em" }}
+            >
+              {chakra.meaning}
+            </p>
+            <p
+              className="mt-5 border-t border-white/15 pt-4 font-serif text-lg italic text-white/70"
+            >
               “{chakra.affirmation}”
             </p>
           </motion.div>

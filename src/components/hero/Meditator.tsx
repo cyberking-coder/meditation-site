@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, type RefObject } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useEffect, useMemo, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { asset } from "@/lib/asset";
@@ -36,11 +35,7 @@ const fragmentShader = /* glsl */ `
   }
 `;
 
-export default function Meditator({
-  progressRef,
-}: {
-  progressRef: RefObject<number>;
-}) {
+export default function Meditator() {
   const { scene } = useGLTF(MODEL_URL);
   const groupRef = useRef<THREE.Group>(null);
 
@@ -94,17 +89,7 @@ export default function Meditator({
     model.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
   }, [model, glowMaterial]);
 
-  useFrame((state) => {
-    if (!groupRef.current) return;
-    const t = state.clock.elapsedTime;
-    // Gentle float: 0.2 units amplitude, ~3s loop.
-    groupRef.current.position.y = Math.sin(t * ((Math.PI * 2) / 3)) * 0.2;
-    // Barely-there sway, nudged by scroll progress (kept small so the
-    // silhouette stays front-facing).
-    const p = progressRef.current ?? 0;
-    groupRef.current.rotation.y = Math.sin(t * 0.2) * 0.04 + p * 0.25;
-  });
-
+  // The figure is intentionally static — no floating/bobbing/sway animation.
   return (
     <group ref={groupRef} position={[0, 0.2, 0]}>
       <primitive object={model} />

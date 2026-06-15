@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useRef, type RefObject } from "react";
+import { Suspense, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
@@ -29,11 +29,7 @@ function ParallaxRig() {
   return null;
 }
 
-export default function GalaxyCanvas({
-  progressRef,
-}: {
-  progressRef: RefObject<number>;
-}) {
+export default function GalaxyCanvas() {
   return (
     <Canvas
       camera={{ position: [0, 0.2, 6], fov: 55 }}
@@ -45,7 +41,7 @@ export default function GalaxyCanvas({
       <Suspense fallback={null}>
         <Stars />
         <Nebula />
-        <Meditator progressRef={progressRef} />
+        <Meditator />
       </Suspense>
       <ParallaxRig />
 

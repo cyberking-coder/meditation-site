@@ -17,27 +17,29 @@ import CrownEffect from "./CrownEffect";
 gsap.registerPlugin(ScrollTrigger);
 
 // CHAKRAS array index: 0 = Root … 6 = Crown.
-const THIRD_EYE_INDEX = 5;
 const CROWN_INDEX = 6;
 
-// Activation runs bottom -> top (Root first, Crown last).
-const CHAKRA_SEGMENTS = [
-  { start: 0.08, end: 0.22, index: 0 }, // Root
-  { start: 0.22, end: 0.34, index: 1 }, // Sacral
-  { start: 0.34, end: 0.46, index: 2 }, // Solar
-  { start: 0.46, end: 0.58, index: 3 }, // Heart
-  { start: 0.58, end: 0.7, index: 4 }, // Throat
-  { start: 0.7, end: 0.82, index: 5 }, // Third Eye
-  { start: 0.82, end: 0.94, index: 6 }, // Crown
+// Bottom -> top, then a return pass back to the Third Eye where the eye opens
+// and leads into the client video.
+const SEGMENTS = [
+  { start: 0.08, end: 0.19, index: 0 }, // Root
+  { start: 0.19, end: 0.3, index: 1 }, // Sacral
+  { start: 0.3, end: 0.41, index: 2 }, // Solar
+  { start: 0.41, end: 0.52, index: 3 }, // Heart
+  { start: 0.52, end: 0.62, index: 4 }, // Throat
+  { start: 0.62, end: 0.73, index: 5 }, // Third Eye — first pass: glow only
+  { start: 0.73, end: 0.84, index: 6 }, // Crown
+  { start: 0.84, end: 0.94, index: 5, eyeOpen: true }, // return: the eye opens
 ];
 
 function clamp(v: number, min = 0, max = 1) {
   return Math.max(min, Math.min(max, v));
 }
 
-function activeFromProgress(p: number): number {
-  for (const seg of CHAKRA_SEGMENTS) {
-    if (p >= seg.start && p < seg.end) return seg.index;
+function segmentAt(p: number): number {
+  for (let i = 0; i < SEGMENTS.length; i++) {
+    const s = SEGMENTS[i];
+    if (p >= s.start && p < s.end) return i;
   }
   return -1;
 }
@@ -65,12 +67,13 @@ export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const welcomeRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLDivElement>(null);
-  const lastActive = useRef(-1);
+  const lastSeg = useRef(-1);
 
   const [activeChakra, setActiveChakra] = useState(-1);
-  // Bumped each time the Third Eye chakra is (re)entered so its one-shot
-  // effect remounts and replays.
-  const [thirdEyeKey, setThirdEyeKey] = useState(0);
+  // True only on the return pass to the Third Eye, where the eye opens.
+  const [eyeOpen, setEyeOpen] = useState(false);
+  // Bumped when the eye-opening pass is (re)entered so its one-shot effect replays.
+  const [eyeKey, setEyeKey] = useState(0);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -84,25 +87,23 @@ export default function Hero() {
       onUpdate: (self) => {
         const p = self.progress;
 
-        // Active chakra (one at a time, Crown -> Root).
-        const idx = activeFromProgress(p);
-        if (idx !== lastActive.current) {
-          const prev = lastActive.current;
-          lastActive.current = idx;
-          setActiveChakra(idx);
-          if (idx === THIRD_EYE_INDEX && prev !== THIRD_EYE_INDEX) {
-            setThirdEyeKey((k) => k + 1);
-          }
+        const segIdx = segmentAt(p);
+        if (segIdx !== lastSeg.current) {
+          lastSeg.current = segIdx;
+          const seg = segIdx >= 0 ? SEGMENTS[segIdx] : null;
+          setActiveChakra(seg ? seg.index : -1);
+          const open = !!seg?.eyeOpen;
+          setEyeOpen(open);
+          if (open) setEyeKey((k) => k + 1);
         }
 
         // Welcome text: full until 0.06, fade out by 0.10.
         if (welcomeRef.current) {
-          const o =
-            p < 0.06 ? 1 : p < 0.1 ? (0.1 - p) / 0.04 : 0;
+          const o = p < 0.06 ? 1 : p < 0.1 ? (0.1 - p) / 0.04 : 0;
           welcomeRef.current.style.opacity = String(o);
         }
 
-        // Video reveal: fades up from below past 0.94.
+        // Video reveal: begins as the eye finishes opening, past 0.94.
         if (videoRef.current) {
           const vp = clamp((p - 0.94) / 0.05);
           videoRef.current.style.opacity = String(vp);
@@ -142,10 +143,8 @@ export default function Hero() {
         {/* Sliding info card */}
         <ChakraCard chakra={cardChakra} />
 
-        {/* Third Eye awakening sequence (one-shot, remounts via key) */}
-        {!isMobile && activeChakra === THIRD_EYE_INDEX && (
-          <ThirdEyeEffect key={thirdEyeKey} />
-        )}
+        {/* Third Eye opening — only on the return pass after the Crown */}
+        {!isMobile && eyeOpen && <ThirdEyeEffect key={eyeKey} />}
 
         {/* Welcome message */}
         <WelcomeText ref={welcomeRef} />

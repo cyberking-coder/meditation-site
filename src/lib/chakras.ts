@@ -25,7 +25,7 @@ export const CHAKRAS: Chakra[] = [
     meaning: "Grounding & Stability",
     affirmation: "I am safe and grounded",
     symbol: "✦",
-    top: 62,
+    top: 67,
   },
   {
     id: 2,

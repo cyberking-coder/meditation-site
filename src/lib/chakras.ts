@@ -73,7 +73,7 @@ export const CHAKRAS: Chakra[] = [
     meaning: "Truth & Expression",
     affirmation: "I speak my truth clearly",
     symbol: "✺",
-    top: 38,
+    top: 34,
   },
   {
     id: 6,
@@ -85,7 +85,7 @@ export const CHAKRAS: Chakra[] = [
     meaning: "Intuition & Wisdom",
     affirmation: "I trust my inner wisdom",
     symbol: "◉",
-    top: 32,
+    top: 27,
   },
   {
     id: 7,
@@ -97,7 +97,7 @@ export const CHAKRAS: Chakra[] = [
     meaning: "Divine Connection",
     affirmation: "I am connected to the universe",
     symbol: "✧",
-    top: 26,
+    top: 20,
   },
 ];
 

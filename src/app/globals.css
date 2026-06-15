@@ -100,8 +100,8 @@ html.lenis body {
 /* ---- Layered concentric chakra orb ---- */
 .chakra-orb {
   position: absolute;
-  width: 55px;
-  height: 55px;
+  width: 30px;
+  height: 30px;
   transform: translateX(-50%);
   opacity: 0.25;
   filter: brightness(0.3) saturate(0.2);
@@ -110,7 +110,7 @@ html.lenis body {
 
 .orb-outer-ring {
   position: absolute;
-  inset: -8px;
+  inset: -6px;
   border-radius: 50%;
   border: 1.5px solid var(--chakra-color);
   opacity: 0.3;
@@ -138,8 +138,8 @@ html.lenis body {
 
 .orb-center-dot {
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background: white;
   border-radius: 50%;
   top: 50%;

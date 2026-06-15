@@ -1,11 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { CHAKRAS } from "@/lib/chakras";
 
 const INDIGO = "#6A0DAD";
 
-// Third-eye overlay anchored on the model's brow (left 50%, top 15%).
-const POS = { left: "50%", top: "15%" } as const;
+// Anchored on the Third Eye chakra's spine position (kept in sync with data).
+const POS = { left: "50%", top: `${CHAKRAS[5].top}%` } as const;
 
 // Deterministic particle directions (pure — no Math.random in render).
 const PARTICLES = Array.from({ length: 20 }, (_, i) => {

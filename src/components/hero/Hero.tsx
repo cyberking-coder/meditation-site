@@ -20,15 +20,15 @@ gsap.registerPlugin(ScrollTrigger);
 const THIRD_EYE_INDEX = 5;
 const CROWN_INDEX = 6;
 
-// Activation runs top -> bottom (Crown first, Root last).
+// Activation runs bottom -> top (Root first, Crown last).
 const CHAKRA_SEGMENTS = [
-  { start: 0.08, end: 0.22, index: 6 }, // Crown
-  { start: 0.22, end: 0.34, index: 5 }, // Third Eye
-  { start: 0.34, end: 0.46, index: 4 }, // Throat
+  { start: 0.08, end: 0.22, index: 0 }, // Root
+  { start: 0.22, end: 0.34, index: 1 }, // Sacral
+  { start: 0.34, end: 0.46, index: 2 }, // Solar
   { start: 0.46, end: 0.58, index: 3 }, // Heart
-  { start: 0.58, end: 0.7, index: 2 }, // Solar
-  { start: 0.7, end: 0.82, index: 1 }, // Sacral
-  { start: 0.82, end: 0.94, index: 0 }, // Root
+  { start: 0.58, end: 0.7, index: 4 }, // Throat
+  { start: 0.7, end: 0.82, index: 5 }, // Third Eye
+  { start: 0.82, end: 0.94, index: 6 }, // Crown
 ];
 
 function clamp(v: number, min = 0, max = 1) {

@@ -1,11 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { CHAKRAS } from "@/lib/chakras";
+
+// Beam rises from the Crown chakra position up to the top of the screen.
+const CROWN_TOP = CHAKRAS[6].top;
 
 /**
  * Crown awakening: a golden/white light beam shooting upward from the crown
- * (top 8%) and a soft purple vignette around the screen edges. Shown while the
- * Crown segment is active (all seven chakras glow together, handled upstream).
+ * and a soft purple vignette around the screen edges.
  */
 export default function CrownEffect() {
   return (
@@ -22,8 +25,8 @@ export default function CrownEffect() {
         style={{
           left: "50%",
           top: 0,
-          height: "9%",
-          width: 80,
+          height: `${CROWN_TOP}%`,
+          width: 70,
           transform: "translateX(-50%)",
           background:
             "linear-gradient(to top, rgba(255,215,140,0.95), rgba(255,255,255,0.55) 35%, transparent)",

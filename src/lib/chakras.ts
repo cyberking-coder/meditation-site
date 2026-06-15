@@ -25,7 +25,7 @@ export const CHAKRAS: Chakra[] = [
     meaning: "Grounding & Stability",
     affirmation: "I am safe and grounded",
     symbol: "✦",
-    top: 68,
+    top: 62,
   },
   {
     id: 2,
@@ -37,7 +37,7 @@ export const CHAKRAS: Chakra[] = [
     meaning: "Creativity & Emotion",
     affirmation: "I embrace my creativity",
     symbol: "✶",
-    top: 57,
+    top: 56,
   },
   {
     id: 3,
@@ -49,7 +49,7 @@ export const CHAKRAS: Chakra[] = [
     meaning: "Personal Power",
     affirmation: "I am confident and powerful",
     symbol: "❂",
-    top: 46,
+    top: 50,
   },
   {
     id: 4,
@@ -61,7 +61,7 @@ export const CHAKRAS: Chakra[] = [
     meaning: "Love & Compassion",
     affirmation: "I give and receive love freely",
     symbol: "❀",
-    top: 35,
+    top: 44,
   },
   {
     id: 5,
@@ -73,7 +73,7 @@ export const CHAKRAS: Chakra[] = [
     meaning: "Truth & Expression",
     affirmation: "I speak my truth clearly",
     symbol: "✺",
-    top: 24,
+    top: 38,
   },
   {
     id: 6,
@@ -85,7 +85,7 @@ export const CHAKRAS: Chakra[] = [
     meaning: "Intuition & Wisdom",
     affirmation: "I trust my inner wisdom",
     symbol: "◉",
-    top: 15,
+    top: 32,
   },
   {
     id: 7,
@@ -97,7 +97,7 @@ export const CHAKRAS: Chakra[] = [
     meaning: "Divine Connection",
     affirmation: "I am connected to the universe",
     symbol: "✧",
-    top: 8,
+    top: 26,
   },
 ];
 

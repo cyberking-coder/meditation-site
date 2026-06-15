@@ -23,7 +23,10 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  /* `clip` prevents horizontal overflow WITHOUT turning html/body into a
+     scroll container — `hidden` would, which breaks `position: sticky`
+     (the hero pin) on descendants. */
+  overflow-x: clip;
 }
 
 body {
@@ -94,32 +97,110 @@ html.lenis body {
     0 0 6px rgba(255, 255, 255, 0.25);
 }
 
-/* ---- Chakra animations ---- */
-@keyframes chakra-spin {
+/* ---- Layered concentric chakra orb ---- */
+.chakra-orb {
+  position: absolute;
+  width: 55px;
+  height: 55px;
+  transform: translateX(-50%);
+  opacity: 0.25;
+  filter: brightness(0.3) saturate(0.2);
+  transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+.orb-outer-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--chakra-color);
+  opacity: 0.3;
+}
+
+.orb-middle-ring {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px dashed var(--chakra-color);
+  opacity: 0.6;
+}
+
+.orb-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 35%,
+    white 0%,
+    var(--chakra-color) 40%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+}
+
+.orb-center-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 6px white, 0 0 12px white;
+}
+
+/* Active (scroll-triggered) state */
+.chakra-orb.active {
+  opacity: 1;
+  filter: brightness(1.2) saturate(1.5);
+}
+
+.chakra-orb.active .orb-outer-ring {
+  opacity: 0.5;
+  animation: orb-ring-pulse 2s ease infinite;
+  box-shadow: 0 0 20px var(--chakra-color);
+}
+
+.chakra-orb.active .orb-middle-ring {
+  opacity: 1;
+  animation: orb-spin 4s linear infinite;
+  box-shadow: 0 0 10px var(--chakra-color);
+}
+
+.chakra-orb.active .orb-inner {
+  box-shadow: 0 0 20px var(--chakra-color), 0 0 40px var(--chakra-color),
+    0 0 60px var(--chakra-color);
+  animation: orb-breathe 2s ease infinite;
+}
+
+/* ---- Chakra orb animations ---- */
+@keyframes orb-ring-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.1;
+  }
+}
+
+@keyframes orb-spin {
+  from {
+    transform: rotate(0deg);
+  }
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes chakra-pulse {
+@keyframes orb-breathe {
   0%,
   100% {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.15);
-  }
-}
-
-/* Outer ripple ring: expands 65px -> 120px (~1.85x) and fades. */
-@keyframes chakra-ring {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.7;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.85);
-    opacity: 0;
+    transform: scale(1.1);
   }
 }
 

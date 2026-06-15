@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { CHAKRAS, progressToSegment, type Chakra } from "@/lib/chakras";
+import { CHAKRAS } from "@/lib/chakras";
 import { useIsMobile } from "@/lib/useIsMobile";
 import ChakraOverlays from "./ChakraOverlays";
 import ChakraCard from "./ChakraCard";
@@ -14,17 +14,32 @@ import MobileHeroVisual from "./MobileHeroVisual";
 import ThirdEyeEffect from "./ThirdEyeEffect";
 import CrownEffect from "./CrownEffect";
 
-// Third Eye = chakra 6 (segment 6), Crown = chakra 7 (segment 7).
-const THIRD_EYE_SEGMENT = 6;
-const CROWN_SEGMENT = 7;
-
 gsap.registerPlugin(ScrollTrigger);
 
-const ALL_IDS = new Set(CHAKRAS.map((c) => c.id));
-const EMPTY_IDS = new Set<number>();
+// CHAKRAS array index: 0 = Root … 6 = Crown.
+const THIRD_EYE_INDEX = 5;
+const CROWN_INDEX = 6;
+
+// Activation runs top -> bottom (Crown first, Root last).
+const CHAKRA_SEGMENTS = [
+  { start: 0.08, end: 0.22, index: 6 }, // Crown
+  { start: 0.22, end: 0.34, index: 5 }, // Third Eye
+  { start: 0.34, end: 0.46, index: 4 }, // Throat
+  { start: 0.46, end: 0.58, index: 3 }, // Heart
+  { start: 0.58, end: 0.7, index: 2 }, // Solar
+  { start: 0.7, end: 0.82, index: 1 }, // Sacral
+  { start: 0.82, end: 0.94, index: 0 }, // Root
+];
 
 function clamp(v: number, min = 0, max = 1) {
   return Math.max(min, Math.min(max, v));
+}
+
+function activeFromProgress(p: number): number {
+  for (const seg of CHAKRA_SEGMENTS) {
+    if (p >= seg.start && p < seg.end) return seg.index;
+  }
+  return -1;
 }
 
 const GalaxyCanvas = dynamic(() => import("./GalaxyCanvas"), {
@@ -50,44 +65,16 @@ export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const welcomeRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLDivElement>(null);
-  const lastSegment = useRef(-1);
+  const lastActive = useRef(-1);
 
-  const [activeIds, setActiveIds] = useState<Set<number>>(EMPTY_IDS);
-  const [cardChakra, setCardChakra] = useState<Chakra | null>(null);
-  const [segment, setSegment] = useState(0);
-  // Bumped each time the Third Eye segment is (re)entered so its one-shot
+  const [activeChakra, setActiveChakra] = useState(-1);
+  // Bumped each time the Third Eye chakra is (re)entered so its one-shot
   // effect remounts and replays.
   const [thirdEyeKey, setThirdEyeKey] = useState(0);
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
-
-    const applySegment = (next: number) => {
-      const prev = lastSegment.current;
-      if (next === prev) return;
-      lastSegment.current = next;
-      setSegment(next);
-
-      // Fire the Third Eye effect once, on entering its segment.
-      if (next === THIRD_EYE_SEGMENT && prev !== THIRD_EYE_SEGMENT) {
-        setThirdEyeKey((k) => k + 1);
-      }
-
-      if (next === 0) {
-        setActiveIds(EMPTY_IDS);
-        setCardChakra(null);
-      } else if (next >= 1 && next <= 6) {
-        // One chakra active at a time; the previous dims as the next lights up.
-        const chakra = CHAKRAS[next - 1];
-        setActiveIds(new Set([chakra.id]));
-        setCardChakra(chakra);
-      } else {
-        // segments 7 & 8: every chakra glows together
-        setActiveIds(ALL_IDS);
-        setCardChakra(next === 7 ? CHAKRAS[6] : null);
-      }
-    };
 
     const trigger = ScrollTrigger.create({
       trigger: section,
@@ -97,28 +84,36 @@ export default function Hero() {
       onUpdate: (self) => {
         const p = self.progress;
 
-        applySegment(progressToSegment(p));
-
-        // Welcome text fades out across segment 0.
-        if (welcomeRef.current) {
-          const o = 1 - clamp(p / 0.09);
-          welcomeRef.current.style.opacity = String(o);
-          welcomeRef.current.style.transform = `translateY(${(1 - o) * -40}px)`;
+        // Active chakra (one at a time, Crown -> Root).
+        const idx = activeFromProgress(p);
+        if (idx !== lastActive.current) {
+          const prev = lastActive.current;
+          lastActive.current = idx;
+          setActiveChakra(idx);
+          if (idx === THIRD_EYE_INDEX && prev !== THIRD_EYE_INDEX) {
+            setThirdEyeKey((k) => k + 1);
+          }
         }
 
-        // Video reveals across segment 8 (94%-100%).
+        // Welcome text: full until 0.06, fade out by 0.10.
+        if (welcomeRef.current) {
+          const o =
+            p < 0.06 ? 1 : p < 0.1 ? (0.1 - p) / 0.04 : 0;
+          welcomeRef.current.style.opacity = String(o);
+        }
+
+        // Video reveal: fades up from below past 0.94.
         if (videoRef.current) {
           const vp = clamp((p - 0.94) / 0.05);
           videoRef.current.style.opacity = String(vp);
-          videoRef.current.style.transform = `scale(${0.88 + vp * 0.12})`;
+          videoRef.current.style.transform = `translateY(${(1 - vp) * 40}px)`;
         }
       },
     });
 
-    // Recompute trigger measurements once the canvas / fonts have settled, so
-    // the 800vh scroll story maps correctly even after late layout shifts.
+    // Recompute trigger measurements once the canvas / fonts have settled.
     const refresh = () => ScrollTrigger.refresh();
-    const t = setTimeout(refresh, 300);
+    const t = setTimeout(refresh, 400);
     window.addEventListener("load", refresh);
 
     return () => {
@@ -127,6 +122,8 @@ export default function Hero() {
       trigger.kill();
     };
   }, []);
+
+  const cardChakra = activeChakra >= 0 ? CHAKRAS[activeChakra] : null;
 
   return (
     <section ref={sectionRef} id="home" className="relative h-[800vh]">
@@ -137,16 +134,16 @@ export default function Hero() {
         </div>
 
         {/* Crown awakening: upward beam + edge vignette (behind the chakras) */}
-        {!isMobile && segment >= CROWN_SEGMENT && <CrownEffect />}
+        {!isMobile && activeChakra === CROWN_INDEX && <CrownEffect />}
 
-        {/* Chakra PNG overlays on the figure's spine */}
-        <ChakraOverlays activeIds={activeIds} />
+        {/* Chakra orbs on the figure's spine */}
+        <ChakraOverlays activeIndex={activeChakra} />
 
         {/* Sliding info card */}
         <ChakraCard chakra={cardChakra} />
 
         {/* Third Eye awakening sequence (one-shot, remounts via key) */}
-        {!isMobile && segment === THIRD_EYE_SEGMENT && (
+        {!isMobile && activeChakra === THIRD_EYE_INDEX && (
           <ThirdEyeEffect key={thirdEyeKey} />
         )}
 

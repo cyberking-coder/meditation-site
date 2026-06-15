@@ -67,6 +67,7 @@ export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const welcomeRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLDivElement>(null);
+  const portalRef = useRef<HTMLDivElement>(null);
   const lastSeg = useRef(-1);
 
   const [activeChakra, setActiveChakra] = useState(-1);
@@ -103,11 +104,24 @@ export default function Hero() {
           welcomeRef.current.style.opacity = String(o);
         }
 
-        // Video reveal: begins as the eye finishes opening, past 0.94.
+        // Zoom INTO the opened eye: a bright portal grows from the third-eye
+        // point to fill the screen (0.86 -> 0.95), then fades to reveal video.
+        if (portalRef.current) {
+          const zp = clamp((p - 0.86) / 0.09);
+          const scale = 0.2 + zp * 48;
+          let op: number;
+          if (p < 0.86) op = 0;
+          else if (p <= 0.95) op = clamp(zp * 1.5);
+          else op = clamp((1 - p) / 0.05); // fade out 0.95 -> 1.0
+          portalRef.current.style.transform = `translate(-50%, -50%) scale(${scale})`;
+          portalRef.current.style.opacity = String(op);
+        }
+
+        // Video opens OUT of the portal: zoom-reveal once the portal whites out.
         if (videoRef.current) {
-          const vp = clamp((p - 0.94) / 0.05);
+          const vp = clamp((p - 0.95) / 0.05);
           videoRef.current.style.opacity = String(vp);
-          videoRef.current.style.transform = `translateY(${(1 - vp) * 40}px)`;
+          videoRef.current.style.transform = `scale(${0.9 + vp * 0.1})`;
         }
       },
     });
@@ -145,6 +159,21 @@ export default function Hero() {
 
         {/* Third Eye opening — only on the return pass after the Crown */}
         {!isMobile && eyeOpen && <ThirdEyeEffect key={eyeKey} />}
+
+        {/* Zoom portal: bright light that grows out of the eye into the video */}
+        <div
+          ref={portalRef}
+          className="pointer-events-none absolute z-[46] h-10 w-10 rounded-full"
+          style={{
+            left: "50%",
+            top: `${CHAKRAS[5].top}%`,
+            transform: "translate(-50%, -50%) scale(0)",
+            opacity: 0,
+            background:
+              "radial-gradient(circle, #ffffff 0%, #e6dbff 30%, rgba(155,107,255,0.6) 55%, rgba(106,13,173,0) 75%)",
+            willChange: "transform, opacity",
+          }}
+        />
 
         {/* Welcome message */}
         <WelcomeText ref={welcomeRef} />

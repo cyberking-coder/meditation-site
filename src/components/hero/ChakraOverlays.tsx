@@ -14,11 +14,13 @@ export default function ChakraOverlays({
         return (
           <div
             key={chakra.id}
-            className="absolute"
+            className="absolute flex items-center justify-center"
             style={{
               left: "50%",
               top: `${chakra.top}%`,
-              transform: "translateX(-50%)",
+              width: 0,
+              height: 0,
+              transform: "translate(-50%, -50%)",
             }}
           >
             {/* Outer ripple rings (active only): expand 65px -> 120px and fade. */}
@@ -41,7 +43,7 @@ export default function ChakraOverlays({
               </>
             )}
 
-            {/* Pulsing wrapper (scale 1 -> 1.15 -> 1). */}
+            {/* Pulsing wrapper (active scales 1 -> 1.15 -> 1). */}
             <div
               style={{
                 animation: active
@@ -49,22 +51,22 @@ export default function ChakraOverlays({
                   : "none",
               }}
             >
-              {/* Glowing colored orb: bright center fading to the chakra colour,
-                  with the chakra's double glow. Dim and grey when inactive. */}
+              {/* Always-visible colored orb. Faint in its colour when inactive,
+                  bright white-cored with a strong double glow when active. */}
               <div
                 style={{
-                  width: 30,
-                  height: 30,
+                  width: active ? 38 : 22,
+                  height: active ? 38 : 22,
                   borderRadius: "9999px",
                   background: active
                     ? `radial-gradient(circle, #ffffff 0%, ${chakra.color} 60%, ${chakra.color} 100%)`
-                    : "radial-gradient(circle, rgba(120,124,140,0.7), rgba(40,42,58,0.4))",
+                    : `radial-gradient(circle, ${chakra.color} 0%, ${chakra.color} 100%)`,
                   boxShadow: active
-                    ? `0 0 12px ${chakra.color}, 0 0 25px ${chakra.color}`
-                    : "none",
-                  opacity: active ? 1 : 0.25,
+                    ? `0 0 12px ${chakra.color}, 0 0 25px ${chakra.color}, 0 0 45px ${chakra.color}`
+                    : `0 0 8px ${chakra.color}`,
+                  opacity: active ? 1 : 0.5,
                   transition:
-                    "opacity 0.5s ease, box-shadow 0.5s ease, background 0.5s ease",
+                    "width 0.5s ease, height 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease, background 0.5s ease",
                 }}
               />
             </div>

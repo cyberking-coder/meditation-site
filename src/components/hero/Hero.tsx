@@ -115,7 +115,15 @@ export default function Hero() {
       },
     });
 
+    // Recompute trigger measurements once the canvas / fonts have settled, so
+    // the 800vh scroll story maps correctly even after late layout shifts.
+    const refresh = () => ScrollTrigger.refresh();
+    const t = setTimeout(refresh, 300);
+    window.addEventListener("load", refresh);
+
     return () => {
+      clearTimeout(t);
+      window.removeEventListener("load", refresh);
       trigger.kill();
     };
   }, []);

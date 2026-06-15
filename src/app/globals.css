@@ -1,26 +1,122 @@
 @import "tailwindcss";
 
+@theme {
+  --color-cosmos: #030014;
+  --color-cosmos-deep: #06021f;
+  --color-cosmos-purple: #7c3aed;
+  --color-cosmos-indigo: #4338ca;
+  --color-muted: #a0aec0;
+
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", serif;
+  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #030014;
+  --foreground: #ffffff;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+/* ---- Lenis smooth scroll (recommended base CSS) ---- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* ---- Custom scrollbar ---- */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030014;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #7c3aed, #4338ca);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9b59b6;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #7c3aed #030014;
+}
+
+/* ---- Utility helpers ---- */
+.glass {
+  background: rgba(10, 6, 30, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.text-glow {
+  text-shadow: 0 0 28px rgba(124, 58, 237, 0.45),
+    0 0 6px rgba(255, 255, 255, 0.25);
+}
+
+@keyframes chakra-spin {
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+
+@keyframes ring-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
 }

@@ -4,8 +4,9 @@ import { useEffect, useMemo, useRef, type RefObject } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
+import { asset } from "@/lib/asset";
 
-const MODEL_URL = "/models/mediator.gltf";
+const MODEL_URL = asset("/models/mediator.gltf");
 
 export default function Meditator({
   progressRef,

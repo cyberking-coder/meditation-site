@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef, useRef, useState } from "react";
+import { asset } from "@/lib/asset";
 
 /**
  * Full-screen video reveal for segment 8. Container opacity/scale is driven by
@@ -44,7 +45,7 @@ const VideoReveal = forwardRef<HTMLDivElement>(function VideoReveal(_, ref) {
         ) : (
           <video
             ref={videoRef}
-            src="/videos/client.mp4"
+            src={asset("/videos/client.mp4")}
             className="aspect-video w-full bg-black"
             autoPlay
             muted

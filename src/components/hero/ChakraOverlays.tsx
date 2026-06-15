@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { CHAKRAS } from "@/lib/chakras";
+import { asset } from "@/lib/asset";
 
 export default function ChakraOverlays({
   activeIds,
@@ -67,13 +67,15 @@ export default function ChakraOverlays({
                 transition: "opacity 0.8s ease, filter 0.8s ease",
               }}
             >
-              <Image
-                src={chakra.image}
+              {/* Plain <img> with an explicit base-path-aware src so the PNGs
+                  resolve under the GitHub Pages subpath. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={asset(chakra.image)}
                 alt={chakra.name}
                 width={60}
                 height={60}
                 className="h-[60px] w-[60px] object-contain"
-                priority={chakra.id <= 3}
               />
             </motion.div>
           </div>

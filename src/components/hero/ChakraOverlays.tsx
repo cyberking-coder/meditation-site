@@ -1,7 +1,6 @@
 "use client";
 
 import { CHAKRAS } from "@/lib/chakras";
-import { asset } from "@/lib/asset";
 
 export default function ChakraOverlays({
   activeIds,
@@ -42,8 +41,7 @@ export default function ChakraOverlays({
               </>
             )}
 
-            {/* Pulsing scale wrapper (separate element so spin + scale don't
-                fight over `transform`). */}
+            {/* Pulsing wrapper (scale 1 -> 1.15 -> 1). */}
             <div
               style={{
                 animation: active
@@ -51,22 +49,22 @@ export default function ChakraOverlays({
                   : "none",
               }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={asset(chakra.image)}
-                alt={chakra.name}
-                width={65}
-                height={65}
+              {/* Glowing colored orb: bright center fading to the chakra colour,
+                  with the chakra's double glow. Dim and grey when inactive. */}
+              <div
                 style={{
-                  width: 65,
-                  height: 65,
-                  objectFit: "contain",
+                  width: 30,
+                  height: 30,
+                  borderRadius: "9999px",
+                  background: active
+                    ? `radial-gradient(circle, #ffffff 0%, ${chakra.color} 60%, ${chakra.color} 100%)`
+                    : "radial-gradient(circle, rgba(120,124,140,0.7), rgba(40,42,58,0.4))",
+                  boxShadow: active
+                    ? `0 0 12px ${chakra.color}, 0 0 25px ${chakra.color}`
+                    : "none",
                   opacity: active ? 1 : 0.25,
-                  filter: active
-                    ? `grayscale(0%) brightness(1.2) drop-shadow(0 0 12px ${chakra.color}) drop-shadow(0 0 25px ${chakra.color})`
-                    : "grayscale(100%) brightness(0.2)",
-                  animation: active ? "chakra-spin 6s linear infinite" : "none",
-                  transition: "opacity 0.5s ease, filter 0.5s ease",
+                  transition:
+                    "opacity 0.5s ease, box-shadow 0.5s ease, background 0.5s ease",
                 }}
               />
             </div>

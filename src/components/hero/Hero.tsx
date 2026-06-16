@@ -21,6 +21,7 @@ import ChakraOverlays from "./ChakraOverlays";
 import ChakraCard from "./ChakraCard";
 import WelcomeText from "./WelcomeText";
 import VideoReveal from "./VideoReveal";
+import AuraVideo from "./AuraVideo";
 import MobileHeroVisual from "./MobileHeroVisual";
 import ThirdEyeEffect from "./ThirdEyeEffect";
 import CrownEffect from "./CrownEffect";
@@ -167,6 +168,10 @@ export default function Hero() {
             }}
           />
         </div>
+
+        {/* Blended video effect that glows behind the figure (between the
+            nebula background and the 3D canvas). */}
+        <AuraVideo />
 
         {/* Background visual (transparent 3D canvas / mobile CSS) */}
         <div className="absolute inset-0 z-10">

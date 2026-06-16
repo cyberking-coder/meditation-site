@@ -6,13 +6,14 @@ import * as THREE from "three";
 
 const STAR_COUNT = 20000;
 
-// Deep-space palette: white, blue-white, purple-tinted.
+// Nebula palette to match the cosmic background: white, blue, cyan, magenta,
+// purple-pink.
 const PALETTE = [
   new THREE.Color("#ffffff"),
-  new THREE.Color("#cfe0ff"),
-  new THREE.Color("#a9c0ff"),
-  new THREE.Color("#c9b6ff"),
-  new THREE.Color("#9b6bff"),
+  new THREE.Color("#bcd4ff"),
+  new THREE.Color("#7fe3ff"),
+  new THREE.Color("#ff8ad8"),
+  new THREE.Color("#c98bff"),
 ];
 
 // Deterministic pseudo-random in [0,1) — pure (no Math.random), so it is safe to

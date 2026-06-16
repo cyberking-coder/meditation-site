@@ -5,7 +5,18 @@ import dynamic from "next/dynamic";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CHAKRAS } from "@/lib/chakras";
+import { asset } from "@/lib/asset";
 import { useIsMobile } from "@/lib/useIsMobile";
+
+// Cosmic nebula background — matches the reference palette (pink left, blue
+// right, bright core). Used as a fallback under the real image so the hero is
+// never blank; drop public/images/cosmos-bg.jpg in to use the photo.
+const NEBULA_BG =
+  "radial-gradient(60% 50% at 24% 42%, rgba(196,70,180,0.5), transparent 62%)," +
+  "radial-gradient(55% 48% at 72% 56%, rgba(64,116,236,0.5), transparent 62%)," +
+  "radial-gradient(38% 32% at 50% 52%, rgba(255,255,255,0.45), transparent 30%)," +
+  "radial-gradient(90% 80% at 50% 48%, rgba(86,32,128,0.4), transparent 72%)," +
+  "linear-gradient(180deg, #08021c 0%, #030010 100%)";
 import ChakraOverlays from "./ChakraOverlays";
 import ChakraCard from "./ChakraCard";
 import WelcomeText from "./WelcomeText";
@@ -143,7 +154,21 @@ export default function Hero() {
   return (
     <section ref={sectionRef} id="home" className="relative h-[800vh]">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* Background visual */}
+        {/* Cosmic nebula background: gradient stand-in + (optional) image,
+            gently drifting. The 3D canvas above is transparent. */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute inset-0" style={{ background: NEBULA_BG }} />
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${asset("/images/cosmos-bg.jpg")})`,
+              animation: "bg-drift 45s ease-in-out infinite",
+              willChange: "transform",
+            }}
+          />
+        </div>
+
+        {/* Background visual (transparent 3D canvas / mobile CSS) */}
         <div className="absolute inset-0 z-10">
           {isMobile ? <MobileHeroVisual /> : <GalaxyCanvas />}
         </div>

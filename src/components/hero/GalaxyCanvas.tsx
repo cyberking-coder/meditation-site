@@ -34,10 +34,10 @@ export default function GalaxyCanvas() {
     <Canvas
       camera={{ position: [0, 0.2, 6], fov: 55 }}
       dpr={[1, 2]}
-      gl={{ antialias: true, powerPreference: "high-performance" }}
+      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
     >
-      <color attach="background" args={["#030014"]} />
-      <fog attach="fog" args={["#030014", 14, 50]} />
+      {/* Transparent canvas so the nebula background image shows through. */}
+      <fog attach="fog" args={["#0a0420", 16, 55]} />
       <Suspense fallback={null}>
         <Stars />
         <Nebula />

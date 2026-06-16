@@ -37,7 +37,7 @@ export const CHAKRAS: Chakra[] = [
     meaning: "Creativity & Emotion",
     affirmation: "I embrace my creativity",
     symbol: "✶",
-    top: 56,
+    top: 58,
   },
   {
     id: 3,

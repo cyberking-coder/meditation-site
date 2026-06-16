@@ -204,6 +204,28 @@ html.lenis body {
   }
 }
 
+/* Equalizer bars for the ambient-audio toggle. */
+@keyframes audio-bar {
+  0%,
+  100% {
+    transform: scaleY(0.5);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* Slow drift/zoom of the nebula background image so it feels alive. */
+@keyframes bg-drift {
+  0%,
+  100% {
+    transform: scale(1.06) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.12) translate(-1.5%, 1.2%);
+  }
+}
+
 @keyframes twinkle {
   0%,
   100% {

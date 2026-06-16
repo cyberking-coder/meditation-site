@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
+import GlitchCursor from "@/components/GlitchCursor";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -31,6 +32,7 @@ export default function RootLayout({
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
       <body className="bg-cosmos text-white antialiased">
         <SmoothScroll>{children}</SmoothScroll>
+        <GlitchCursor />
       </body>
     </html>
   );

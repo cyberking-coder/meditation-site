@@ -13,9 +13,8 @@ import { asset } from "@/lib/asset";
  * into the scene instead of sitting in a hard rectangle. A radial mask
  * concentrates it around the figure and feathers the edges into the nebula.
  *
- * Drop a clip at `public/videos/aura.mp4` (loopable, ideally on a dark
- * background) and it appears automatically; until then the layer stays invisible
- * so the hero is never broken.
+ * The clip lives at `public/aura.mp4` (loopable, ideally on a dark background);
+ * if it's missing the layer stays invisible so the hero is never broken.
  */
 export default function AuraVideo() {
   const [ready, setReady] = useState(false);
@@ -36,7 +35,7 @@ export default function AuraVideo() {
       }}
     >
       <video
-        src={asset("/videos/aura.mp4")}
+        src={asset("/aura.mp4")}
         className="h-full w-full object-cover"
         autoPlay
         loop

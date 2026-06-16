@@ -10,7 +10,7 @@ import { useIsMobile } from "@/lib/useIsMobile";
 
 // Cosmic nebula background — matches the reference palette (pink left, blue
 // right, bright core). Used as a fallback under the real image so the hero is
-// never blank; drop public/images/cosmos-bg.jpg in to use the photo.
+// never blank; drop public/images/cosmos-bg.png in to use the photo.
 const NEBULA_BG =
   "radial-gradient(60% 50% at 24% 42%, rgba(196,70,180,0.5), transparent 62%)," +
   "radial-gradient(55% 48% at 72% 56%, rgba(64,116,236,0.5), transparent 62%)," +
@@ -161,7 +161,7 @@ export default function Hero() {
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: `url(${asset("/images/cosmos-bg.jpg")})`,
+              backgroundImage: `url(${asset("/images/cosmos-bg.png")})`,
               animation: "bg-drift 45s ease-in-out infinite",
               willChange: "transform",
             }}

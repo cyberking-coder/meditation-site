@@ -29,8 +29,13 @@ const fragmentShader = /* glsl */ `
   varying vec3 vViewDir;
   void main() {
     float fresnel = pow(1.0 - abs(dot(normalize(vNormal), normalize(vViewDir))), power);
-    vec3 color = glowColor * fresnel * intensity;
-    float alpha = clamp(fresnel * 1.3, 0.0, 1.0);
+    // Dark body so the figure reads as a silhouette against the bright nebula,
+    // with the bright glowing rim on the edges.
+    vec3 body = vec3(0.015, 0.0, 0.045);
+    vec3 rim = glowColor * fresnel * intensity;
+    vec3 color = body + rim;
+    // Body is mostly opaque (darkens the background) and the rim is fully opaque.
+    float alpha = clamp(0.62 + fresnel, 0.0, 1.0);
     gl_FragColor = vec4(color, alpha);
   }
 `;
@@ -54,7 +59,7 @@ export default function Meditator() {
         fragmentShader,
         transparent: true,
         depthWrite: false,
-        blending: THREE.AdditiveBlending,
+        blending: THREE.NormalBlending,
       }),
     []
   );

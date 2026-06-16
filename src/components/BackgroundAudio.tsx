@@ -10,25 +10,55 @@ import { asset } from "@/lib/asset";
 export default function BackgroundAudio() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
+  // Tracks whether the user wants sound on, so we can resume after tab switches
+  // / unexpected pauses without overriding an intentional mute.
+  const wantPlaying = useRef(false);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
     audio.volume = 0.35;
+    audio.loop = true;
 
-    const start = () => {
+    const play = () => {
       audio
         .play()
-        .then(() => setPlaying(true))
+        .then(() => {
+          wantPlaying.current = true;
+          setPlaying(true);
+        })
         .catch(() => {});
+    };
+
+    const start = () => {
+      play();
       window.removeEventListener("pointerdown", start);
       window.removeEventListener("keydown", start);
     };
     window.addEventListener("pointerdown", start);
     window.addEventListener("keydown", start);
+
+    // Belt-and-suspenders looping: if it ever ends or gets paused by the
+    // browser (tab switch, etc.) while the user wants it on, resume it.
+    const onEnded = () => {
+      if (wantPlaying.current) {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+      }
+    };
+    const onVisible = () => {
+      if (document.visibilityState === "visible" && wantPlaying.current) {
+        audio.play().catch(() => {});
+      }
+    };
+    audio.addEventListener("ended", onEnded);
+    document.addEventListener("visibilitychange", onVisible);
+
     return () => {
       window.removeEventListener("pointerdown", start);
       window.removeEventListener("keydown", start);
+      audio.removeEventListener("ended", onEnded);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, []);
 
@@ -36,8 +66,10 @@ export default function BackgroundAudio() {
     const audio = audioRef.current;
     if (!audio) return;
     if (audio.paused) {
+      wantPlaying.current = true;
       audio.play().then(() => setPlaying(true)).catch(() => {});
     } else {
+      wantPlaying.current = false;
       audio.pause();
       setPlaying(false);
     }

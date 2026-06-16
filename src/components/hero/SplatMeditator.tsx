@@ -16,7 +16,8 @@ export default function SplatMeditator() {
     <Splat
       src={asset("/models/meditator.splat")}
       position={[0, 0.2, 0]}
-      rotation={[0, 0, 0]}
+      // Source splat faces sideways; yaw 90° so it faces the camera.
+      rotation={[0, Math.PI / 2, 0]}
       toneMapped={false}
     />
   );

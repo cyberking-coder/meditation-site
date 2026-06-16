@@ -6,7 +6,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import Stars from "./Stars";
 import Nebula from "./Nebula";
-import Meditator from "./Meditator";
+import SplatMeditator from "./SplatMeditator";
 
 /** Eases the camera toward the pointer for a subtle parallax drift. */
 function ParallaxRig() {
@@ -41,15 +41,16 @@ export default function GalaxyCanvas() {
       <Suspense fallback={null}>
         <Stars />
         <Nebula />
-        <Meditator />
+        <SplatMeditator />
       </Suspense>
       <ParallaxRig />
 
-      {/* Bloom makes the figure's bright Fresnel outline radiate. */}
+      {/* Bloom lifts the bright stars/nebula. Threshold kept high so the
+          splat figure keeps its real colours instead of blooming out. */}
       <EffectComposer enableNormalPass={false}>
         <Bloom
-          intensity={1.1}
-          luminanceThreshold={0.22}
+          intensity={0.8}
+          luminanceThreshold={0.4}
           luminanceSmoothing={0.9}
           radius={0.8}
           mipmapBlur
